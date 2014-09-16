@@ -1,0 +1,86 @@
+﻿@model AroChip1.Models.AroChipOrder
+
+@{
+    ViewBag.Title = "Order";
+}
+
+<h2>Order</h2>
+
+<table class="table">
+    <tr>
+        <th style ="width:100px">
+            Item
+        </th>
+        <th style="width:100px">
+            Price
+        </th>
+        <th style="width:120px">
+            <p>Total</p>
+        </th>
+        <th style="width:10px"></th>
+        <th style="width:60px"></th>
+    </tr>
+
+    @foreach (KeyValuePair<AroChip1.Models.Item, int> i in Model.items)
+    {
+        <tr class="t">
+            <td style="width:100px">
+                @Html.DisplayFor(modelItem => i.Key.name)
+            </td>
+            <td class="price" style="width:100px">
+                @Html.DisplayFor(modelItem => i.Key.price)
+            </td>
+            <td class="count" style="width:120px">
+                @Html.DisplayFor(modelItem => i.Value)
+            </td>
+            <td style="width:10px">
+                <button class="glyphicon glyphicon-minus minus"></button>
+            </td>
+            <td style="width:60px">
+                <button class="glyphicon glyphicon-plus plus"></button>
+            </td>
+        </tr>
+    }
+</table>
+
+<button onclick="submitForm()" class="btn btn-primary btn-lg">Go to payment &raquo;</button>
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        f();
+    });
+    var submitForm = function () {
+        var cents = parseInt(f2() * 100);
+        var url = "/Home/Payment?total=" + cents;
+        window.open(url, "_self");
+    }
+    var f = function () {
+        $('.plus').click(function () {
+            var i = $(this).parent().parent().children('.count').html();
+            i = parseInt(i);
+            i++;
+            $(this).parent().parent().children('.count').html(i);
+            f2();
+        });
+        $('.minus').click(function () {
+            var i = $(this).parent().parent().children('.count').html();
+            i = parseInt(i);
+            if (i > 0) { i--; }
+            $(this).parent().parent().children('.count').html(i);
+            f2();
+        });
+    };
+    var f2 = function () {
+        var totes = 0.0;
+        $('.t').each(function () {
+            var p = $(this).children('.price').html();
+            var c = $(this).children('.count').html();
+            totes += parseFloat(p) * parseInt(c);
+        });
+        $('h2').html('Order - $' + totes);
+        return totes;
+    };
+</script>
+    }
+@*<script src="~/Scripts/addminusbutton.js"></script>*@
